@@ -1,10 +1,26 @@
 const express = require("express");
 const app = express();
-const MongoClient = require("mongodb").MongoClient;
-const PORT = 2222;
-require("dotenv").config();
+const connectDB = require('./config/database')
+const homeRoutes = require('./routes/home')
+const todoRoutes = require('./routes/todos')
+/* const MongoClient = require("mongodb").MongoClient;
+const PORT = 2222; */
+require("dotenv").config({path: './config/.env'});
 
-let db,
+connectDB()
+
+app.set('view engine', 'ejs')
+app.use(express.static('public'))
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
+
+app.use('/', homeRoutes)
+app.use('/todos', todoRoutes)
+
+app.listen(process.env.PORT, () => {
+  console.log('Server is running, you better catch it!')
+})
+/* let db,
   dbConnectionStr = process.env.DB_STRING,
   dbName = "todo";
 
@@ -82,3 +98,4 @@ app.delete("/deleteTodo", (req, res) => {
 app.listen(process.env.PORT || PORT, () => {
   console.log("Server is running, you better catch it!");
 });
+ */

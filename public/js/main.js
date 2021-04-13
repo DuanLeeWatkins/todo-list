@@ -1,6 +1,6 @@
 const deleteBtn = document.querySelectorAll(".del");
-const todoItem = document.querySelectorAll(".todoItem span");
-const todoComplete = document.querySelectorAll(".todoItem span.completed");
+const todoItem = document.querySelectorAll("span.not");
+const todoComplete = document.querySelectorAll("span.completed");
 
 Array.from(deleteBtn).forEach((el) => {
   el.addEventListener("click", deleteTodo);
@@ -9,7 +9,7 @@ Array.from(todoItem).forEach((el) => {
   el.addEventListener("click", markComplete);
 });
 Array.from(todoComplete).forEach((el) => {
-  el.addEventListener("click", undo);
+  el.addEventListener("click", markIncomplete);
 });
 
 async function deleteTodo() {
@@ -18,14 +18,14 @@ async function deleteTodo() {
     parentNode (li) and the childNode (span).
     Then grab the first index of the span (the space counts as zero so the
     text is index 1) */
-  const todoText = this.parentNode.childNodes[1].innerText;
+  const todoId = this.parentNode.dataset.id;
   //fetch to database //
   try {
-    const response = await fetch("deleteTodo", {
+    const response = await fetch("todos/deleteTodo", {
       method: "delete",
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({
-        rainbowUnicorn: todoText,
+        todoIdFromJSFile: todoId,
       }),
     });
     const data = await response.json();
@@ -37,14 +37,14 @@ async function deleteTodo() {
 }
 
 async function markComplete() {
-  const todoText = this.parentNode.childNodes[1].innerText;
+  const todoId = this.parentNode.dataset.id;
   //fetch to database //
   try {
-    const response = await fetch("markComplete", {
+    const response = await fetch("todos/markComplete", {
       method: "put",
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({
-        rainbowUnicorn: todoText,
+        todoIdFromJSFile: todoId,
       }),
     });
     const data = await response.json();
@@ -55,15 +55,15 @@ async function markComplete() {
   }
 }
 
-async function undo() {
-  const todoText = this.parentNode.childNodes[1].innerText;
+async function markIncomplete() {
+  const todoId = this.parentNode.dataset.id;
   //fetch to database //
   try {
-    const response = await fetch("undo", {
+    const response = await fetch("todos/markIncomplete", {
       method: "put",
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({
-        rainbowUnicorn: todoText,
+        todoIdFromJSFile: todoId,
       }),
     });
     const data = await response.json();
