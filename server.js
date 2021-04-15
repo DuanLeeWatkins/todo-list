@@ -1,12 +1,17 @@
 const express = require("express");
 const app = express();
 const connectDB = require('./config/database')
+
+//Making sure requests goes to right controller
 const homeRoutes = require('./routes/home')
 const todoRoutes = require('./routes/todos')
 /* const MongoClient = require("mongodb").MongoClient;
 const PORT = 2222; */
+
+//enabling us to use our env file
 require("dotenv").config({path: './config/.env'});
 
+//Connects us to our DataBase
 connectDB()
 
 app.set('view engine', 'ejs')
@@ -14,9 +19,11 @@ app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
+//handles request routes
 app.use('/', homeRoutes)
 app.use('/todos', todoRoutes)
 
+//Server is Listening
 app.listen(process.env.PORT, () => {
   console.log('Server is running, you better catch it!')
 })
